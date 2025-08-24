@@ -1,3 +1,4 @@
+from google.genai import types
 from functions.config import max_characters_read
 from functions.directory_helper import get_app_directory
 from functions.directory_helper import is_path_relative
@@ -25,3 +26,19 @@ def get_file_content(working_directory, file_path):
             raise Exception(f'Error: Cannot read "{file_path}" as it is outside the permitted working directory')
     except Exception as e:
         return str(e)
+
+# Function declaration to pass to AI model
+schema_get_file_content = types.FunctionDeclaration(
+    name="get_file_content",
+    description="Returns the content of the specified file in the specified directory, output is limited to 10000 characters.",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="The file path of the file that the content is retrieved from, relative to the working directory.",
+            ),
+        },
+        required=["file_path"]
+    ),
+)
